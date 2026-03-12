@@ -56,10 +56,110 @@ Add this to your project's `.mcp.json`:
 
 That's it. Two API keys. Everything else is auto-configured.
 
-### 3. Restart Claude Code
+### 3. Or let Claude Code do it all
+
+Copy this prompt into a Claude Code session. It guides you through a 3-step install with 2 restarts:
+
+<details>
+<summary><strong>Click to expand auto-install prompt</strong></summary>
+
+```
+# Install neo-cortex-mcp — Persistent Memory for Claude Code
+# This installation requires 3 steps with 2 restarts.
+# After each step, tell the user what you did and ask them to restart.
+
+## STEP 1 — Check prerequisites and create config files
+
+1a. Check Python >= 3.12
+   Run: python3 --version
+   If missing or < 3.12: install via system package manager
+   (apt: sudo apt install python3.12, brew: brew install python@3.12)
+
+1b. Check uv (Python package manager)
+   Run: uv --version
+   If missing: curl -LsSf https://astral.sh/uv/install.sh | sh
+   Verify uvx command works after install.
+
+1c. Get API keys
+   Ask the user for two API keys:
+   - JINA_API_KEY — from https://jina.ai/ (free tier, for embeddings)
+   - GEMINI_API_KEY — from https://ai.google.dev/ (free tier, for distillation)
+   Show the URLs and ask the user to provide the keys.
+
+1d. Create .mcp.json
+   Create .mcp.json in the project root with:
+   {
+     "mcpServers": {
+       "neo-cortex": {
+         "command": "uvx",
+         "args": ["--from", "neo-cortex-mcp@latest", "neo-cortex-mcp"],
+         "env": {
+           "JINA_API_KEY": "<key-from-1c>",
+           "GEMINI_API_KEY": "<key-from-1c>"
+         }
+       }
+     }
+   }
+   If .mcp.json already exists, merge the neo-cortex entry into it.
+
+1e. Add to CLAUDE.md
+   Add this block to the project's CLAUDE.md (create if missing):
+
+   # Memory
+   This project uses neo-cortex for persistent memory.
+   ## Rules
+   - ALWAYS use `memory_query` before saying "I don't know"
+   - Use `memory_search` to filter by project or activity
+   - Use `memory_timeline` at session start for recent context
+   - Cortex is the primary source of truth for project history
+   - Conversations are captured automatically via hooks
+
+1f. Tell the user:
+   "Done! I created .mcp.json and CLAUDE.md.
+   Now please RESTART Claude Code so the MCP server can start.
+   After restart, type: Check neo-cortex installation"
+
+## STEP 2 — After first restart: verify MCP and hooks
+(The user will restart and type "Check neo-cortex installation")
+
+2a. Test MCP connection
+   Run: memory_stats
+   If it works: the MCP server is running.
+   If it fails: check .mcp.json syntax and API keys.
+
+2b. Check hooks were auto-installed
+   Read .claude/settings.json — it should now contain
+   SessionStart and Stop hooks (auto-installed by neo-cortex).
+   If the hooks are there, tell the user:
+   "MCP server is working! Hooks were auto-installed.
+   Please RESTART Claude Code one more time to activate the hooks.
+   After restart, type: Verify neo-cortex memory"
+
+   If hooks are NOT there, something went wrong with bootstrap.
+   Check that .mcp.json has the correct neo-cortex entry.
+
+## STEP 3 — After second restart: everything is active
+(The user will restart and type "Verify neo-cortex memory")
+
+3a. Confirm hooks fired
+   You should see cortex timeline output at startup (session context).
+   Run memory_stats to confirm connection.
+
+3b. Tell the user:
+   "All set! neo-cortex memory is fully active.
+   - Sessions are captured automatically when you exit
+   - Knowledge is distilled in the background
+   - Use memory_query to search past conversations
+   - 11 MCP tools are available
+   Your AI now remembers everything."
+```
+
+</details>
+
+### 4. Restart Claude Code
 
 On first launch, neo-cortex **auto-bootstraps**:
-- Installs session hooks (start + stop)
+- Installs session hooks (start + stop) into `.claude/settings.json`
 - Creates `cortex_db/` directory for storage
 - Requires one restart to activate hooks
 
@@ -67,6 +167,48 @@ After restart, every session automatically:
 1. **Starts** with context from your recent memories
 2. **Captures** the conversation when you're done
 3. **Distills** knowledge in the background
+
+### Session Hooks (auto-installed)
+
+neo-cortex installs two hooks into your project's `.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uvx --from neo-cortex-mcp@latest neo-cortex-timeline --n 10",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uvx --from neo-cortex-mcp@latest neo-cortex-stop-hook",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+| Hook | What it does |
+|------|-------------|
+| **SessionStart** (`neo-cortex-timeline`) | Injects [MBEL v5 grammar](https://github.com/LadislavSopko/neo-cortex-mcp/blob/main/docs/mbel-v5.md) + last 10 memories into session context |
+| **Stop** (`neo-cortex-stop-hook`) | Captures conversation turns into `conversation_log.db` for background distillation |
+
+> **Note:** These hooks are installed automatically by the MCP server on first launch. If you already have hooks in `.claude/settings.json`, neo-cortex merges — it never overwrites existing hooks.
 
 ## What You Get
 
