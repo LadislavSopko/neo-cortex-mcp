@@ -243,4 +243,4 @@ We welcome bug reports and feature requests via [Issues](https://github.com/Ladi
 
 ## License
 
-MIT
+[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) — Free for non-commercial use. Commercial use requires a separate license. Contact: ladislav.sopko@gmail.com
