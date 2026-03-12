@@ -122,9 +122,21 @@ Conversation → Stop Hook → Conversation Log
 - **Noise filtering**: 7-category filter prevents storing ephemeral junk (test output, file listings, etc.)
 - **Observation levels**: Direct, Inferred, Abstract, Reported, Metacognitive
 
+## What Happens Automatically
+
+neo-cortex handles three things without you doing anything:
+
+1. **Session Start** — The hook injects the [MBEL v5 grammar](https://github.com/LadislavSopko/neo-cortex-mcp/blob/main/docs/mbel-v5.md) (a compression language with 27 operators) + a compact summary of your recent memories. Claude learns to read and write MBEL automatically.
+
+2. **During Session** — The 11 MCP tools are available. Claude can query memories, search, view stats. Memory results come back in MBEL format (75% compression, 100% fidelity).
+
+3. **Session End** — The stop hook captures the full conversation, queues it for background distillation.
+
+**You don't need to teach Claude the MBEL grammar** — it's injected automatically at every session start.
+
 ## Add to Your CLAUDE.md
 
-To teach Claude Code how to use its memory effectively, add this to your project's `CLAUDE.md`:
+What you *should* add to your `CLAUDE.md` is behavioral guidance — telling Claude *when* and *how* to use its memory:
 
 ```markdown
 # Memory
@@ -138,13 +150,16 @@ This project uses neo-cortex for persistent memory across sessions.
 - DO NOT ingest noise — only store genuinely useful knowledge via `memory_ingest`
 - The cortex is the primary source of truth for project history and decisions
 
-## How Memory Works
-- Conversations are captured automatically via hooks
-- Knowledge is distilled in the background (Gemini)
+## How It Works
+- Conversations are captured automatically via hooks (you don't need to save manually)
+- Knowledge is distilled in the background by Gemini LLM
 - Memories have energy (0.0-1.0) — recalled memories get stronger, unused ones fade
-- Dream cycles consolidate and prune memories
+- Dream cycles consolidate and prune memories periodically
 - The concept graph tracks relationships between ideas
+- MBEL grammar is injected automatically at session start — you can read/write it natively
 ```
+
+> **Tip:** The more specific your `CLAUDE.md` is about your project's context, the better Claude will use its memory. For example: "When debugging auth issues, always check cortex for past auth decisions."
 
 ## Configuration
 
