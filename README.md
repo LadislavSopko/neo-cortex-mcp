@@ -212,7 +212,7 @@ neo-cortex installs two hooks into your project's `.claude/settings.json`:
 
 ## What You Get
 
-### 11 MCP Tools
+### 12 MCP Tools
 
 These appear automatically in Claude Code:
 
@@ -229,6 +229,7 @@ These appear automatically in Claude Code:
 | `memory_rebuild` | Wipe and rebuild from conversation log |
 | `memory_identity_review` | Self-reflection — propose identity insights |
 | `memory_dashboard` | Web UI for browsing memories + concept graph |
+| `memory_graph` | Navigate the concept graph — top concepts, neighbors, paths, neighborhoods |
 
 ### Web Dashboard
 
@@ -259,6 +260,7 @@ Conversation → Stop Hook → Conversation Log
 
 **Key behaviors:**
 - **Dual retrieval**: Vector similarity + full-text search, fused with Reciprocal Rank Fusion (RRF)
+- **Concept graph**: NetworkX tracks relationships between ideas — navigate with `memory_graph`
 - **Deduplication**: SimHash (64-bit, Hamming distance ≤ 3) prevents storing the same fact twice
 - **Energy model**: Memories gain energy when recalled, decay over execution days (Ebbinghaus curve)
 - **Noise filtering**: 7-category filter prevents storing ephemeral junk (test output, file listings, etc.)
@@ -375,14 +377,14 @@ A: Locally, in `cortex_db/` inside your project. Nothing leaves your machine exc
 A: Yes. Set `CORTEX_DATA_DIR` to a shared directory, or use separate `cortex_db/` per project.
 
 **Q: How many memories can it handle?**
-A: Tested with 900+ memories. ChromaDB and SQLite scale well beyond that.
+A: Tested with 900+ memories and a concept graph of 950+ nodes. ChromaDB and SQLite scale well beyond that.
 
 **Q: What if I want to start fresh?**
 A: Use the `memory_rebuild` tool — it wipes all memories and rebuilds from the conversation log.
 
 ## Status
 
-**Current version: 5.18.1** (Early Preview)
+**Current version: 5.21.0** (Early Preview)
 
 This is an early preview release. The core functionality is stable and battle-tested in daily use, but:
 
