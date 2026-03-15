@@ -73,7 +73,7 @@ section{padding:6rem 2rem}
 .terminal-body .dim{color:var(--dim)}.terminal-body .txt{color:var(--text)}.terminal-body .grn{color:var(--green)}.terminal-body .cyn{color:var(--cyan)}
 
 /* ===== PIPELINE ===== */
-.pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem}
+.pipeline{display:grid;grid-template-columns:repeat(6,1fr);gap:1rem}
 .pipe-step{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem 1rem;text-align:center;transition:border-color .3s,transform .3s}
 .pipe-step:hover{border-color:var(--accent);transform:translateY(-4px)}
 .pipe-icon{font-size:2rem;margin-bottom:.75rem}
@@ -138,6 +138,7 @@ footer{border-top:1px solid var(--border);padding:3rem 2rem;text-align:center;co
     <li><a href="#features">Features</a></li>
     <li><a href="#install">Quick Start</a></li>
     <li><a href="#tools">MCP Tools</a></li>
+    <li><a href="#providers">Providers</a></li>
     <li><a href="#autopilot">Auto-Install</a></li>
     <li><a href="https://github.com/LadislavSopko/neo-cortex-mcp">GitHub</a></li>
   </ul>
@@ -205,7 +206,7 @@ footer{border-top:1px solid var(--border);padding:3rem 2rem;text-align:center;co
 <section id="how">
   <div class="container">
     <div class="label">How It Works</div>
-    <div class="title">Five-stage memory pipeline</div>
+    <div class="title">Six-stage memory pipeline</div>
     <div class="sub">Every conversation becomes searchable knowledge, automatically.</div>
     <div class="pipeline">
       <div class="pipe-step">
@@ -216,7 +217,7 @@ footer{border-top:1px solid var(--border);padding:3rem 2rem;text-align:center;co
       <div class="pipe-step">
         <div class="pipe-icon">&#129504;</div>
         <h3>Distill</h3>
-        <p>Gemini extracts atomic facts &mdash; one fact, one memory</p>
+        <p>LLM extracts 3-layer knowledge &mdash; technical, lessons, preferences</p>
       </div>
       <div class="pipe-step">
         <div class="pipe-icon">&#128300;</div>
@@ -229,9 +230,14 @@ footer{border-top:1px solid var(--border);padding:3rem 2rem;text-align:center;co
         <p>ChromaDB + SQLite FTS5 + concept graph</p>
       </div>
       <div class="pipe-step">
+        <div class="pipe-icon">&#128279;</div>
+        <h3>Dedup</h3>
+        <p>SimHash + conflict resolution &mdash; no duplicates</p>
+      </div>
+      <div class="pipe-step">
         <div class="pipe-icon">&#127769;</div>
         <h3>Dream</h3>
-        <p>Idle consolidation &mdash; merge similar, decay noise</p>
+        <p>Idle consolidation, decay, and metacognitive reflection</p>
       </div>
     </div>
   </div>
@@ -282,7 +288,7 @@ footer{border-top:1px solid var(--border);padding:3rem 2rem;text-align:center;co
 <section id="tools">
   <div class="container">
     <div class="label">MCP Tools</div>
-    <div class="title">11 tools, zero configuration</div>
+    <div class="title">12 tools, zero configuration</div>
     <div class="sub">All tools appear automatically in Claude Code after installation.</div>
     <table class="tools-table">
       <thead><tr><th>Tool</th><th>Description</th></tr></thead>
@@ -298,13 +304,36 @@ footer{border-top:1px solid var(--border);padding:3rem 2rem;text-align:center;co
         <tr><td><code>memory_rebuild</code></td><td>Wipe and rebuild from conversation log</td></tr>
         <tr><td><code>memory_identity_review</code></td><td>Self-reflection &mdash; propose identity insights with evidence</td></tr>
         <tr><td><code>memory_dashboard</code></td><td>Web UI &mdash; browse memories + 3D concept graph</td></tr>
+        <tr><td><code>memory_graph</code></td><td>Navigate concept graph &mdash; top concepts, neighbors, paths</td></tr>
       </tbody>
     </table>
   </div>
 </section>
 
+<!-- PROVIDERS -->
+<section class="dark-bg" id="providers">
+  <div class="container">
+    <div class="label">LLM Providers</div>
+    <div class="title">Choose your engine</div>
+    <div class="sub">6 calibrated providers. Each with optimized prompts. Default: Gemini (best quality, cheapest).</div>
+    <table class="tools-table">
+      <thead><tr><th>Provider</th><th>Distill Quality</th><th>Classify Speed</th><th>Cost/mo*</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Gemini 2.5 Flash</strong></td><td style="color:var(--green)">Best</td><td>0.9s</td><td>~$1</td><td>Recommended default</td></tr>
+        <tr><td>OpenAI gpt-4.1-mini</td><td>Good</td><td>1.5s</td><td>~$2</td><td>Reliable alternative</td></tr>
+        <tr><td>Anthropic Haiku</td><td>Dense</td><td>2.3s</td><td>~$5</td><td>Premium quality</td></tr>
+        <tr><td>Groq Llama 70B</td><td style="color:var(--dim)">Classify only</td><td style="color:var(--green)">0.4s</td><td>~$2</td><td>Fastest classifier</td></tr>
+        <tr><td>Z.AI GLM-4.7</td><td>Acceptable</td><td>3s</td><td>Free**</td><td>Non-deterministic</td></tr>
+        <tr><td>Claude Code</td><td>Good</td><td>2s</td><td>$0</td><td>Uses your subscription</td></tr>
+      </tbody>
+    </table>
+    <p style="color:var(--dim);font-size:.8rem;margin-top:1rem">*Estimated for ~100 turns/day. **Free with Z.AI Coding Plan.</p>
+    <p style="color:var(--muted);font-size:.9rem;margin-top:1.5rem">Configure via <code>CLASSIFIER_PROVIDER</code> and <code>DISTILLER_PROVIDER</code> env vars. Both default to <code>gemini</code>. See <a href="https://github.com/LadislavSopko/neo-cortex-mcp#llm-providers">README</a> for examples.</p>
+  </div>
+</section>
+
 <!-- INSTALL -->
-<section class="dark-bg" id="install">
+<section id="install">
   <div class="container">
     <div class="label">Get Started</div>
     <div class="title">Up and running in 3 minutes</div>
@@ -356,7 +385,7 @@ $ <span class="k">claude</span>
 $ <span class="k">claude</span>
 
 <span class="s">&#10003; Loaded 0 memories (first session)</span>
-<span class="s">&#10003; 11 MCP tools available</span>
+<span class="s">&#10003; 12 MCP tools available</span>
 <span class="s">&#10003; Memory is active</span></div>
         </div>
         <div class="step-card">
@@ -473,7 +502,7 @@ persistent memory across sessions.
    - Sessions are captured automatically when you exit
    - Knowledge is distilled in the background
    - Use memory_query to search past conversations
-   - 11 MCP tools are available
+   - 12 MCP tools are available
    Your AI now remembers everything."</div>
     </div>
     <p style="color:var(--muted);font-size:.88rem;margin-top:1.25rem;text-align:center">This prompt works with Claude Code (Anthropic CLI). Paste it at the start of a new session.</p>
@@ -488,8 +517,8 @@ persistent memory across sessions.
       <div class="title" style="margin-bottom:1.5rem">Your data stays yours</div>
       <p>All memories are stored <strong>locally</strong> in SQLite files inside your project.
       No telemetry. No cloud storage. No accounts.
-      The only external calls are to Jina AI (embeddings) and Gemini (distillation) &mdash;
-      both with free tiers and transparent API usage.</p>
+      The only external calls are to Jina AI (embeddings) and your chosen LLM provider (distillation).
+      You pick the provider. Your data stays on your machine.</p>
     </div>
   </div>
 </section>
@@ -503,7 +532,7 @@ persistent memory across sessions.
       <div class="feat" style="padding:1.25rem"><h3 style="font-size:.95rem">Python &ge; 3.12</h3><p style="font-size:.82rem">Runtime for neo-cortex</p></div>
       <div class="feat" style="padding:1.25rem"><h3 style="font-size:.95rem">uv (astral.sh)</h3><p style="font-size:.82rem">For the <code>uvx</code> command</p></div>
       <div class="feat" style="padding:1.25rem"><h3 style="font-size:.95rem">Claude Code</h3><p style="font-size:.82rem">CLI with MCP support</p></div>
-      <div class="feat" style="padding:1.25rem"><h3 style="font-size:.95rem">Free API keys</h3><p style="font-size:.82rem">Jina AI + Google Gemini</p></div>
+      <div class="feat" style="padding:1.25rem"><h3 style="font-size:.95rem">API keys</h3><p style="font-size:.82rem">Jina AI + one LLM provider</p></div>
     </div>
   </div>
 </section>
